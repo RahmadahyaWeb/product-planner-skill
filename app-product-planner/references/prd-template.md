@@ -1,53 +1,54 @@
-# Template PRD.md
+# PRD.md template
 
-Daftar periksa, bukan formulir. Hapus bagian yang tidak relevan. Website kecil cukup 1 halaman.
+A checklist, not a form. Delete sections that do not apply. A small website fits on one page. Write the document in the user's language; the headings below may be translated.
 
 ```markdown
-# PRD — <Nama Proyek>
+# PRD — <Project Name>
 
-Versi 1.0 · YYYY-MM-DD · Status: menunggu persetujuan
+Version 1.0 · YYYY-MM-DD · Status: awaiting approval
 
-## Masalah
-<1–3 kalimat: masalah apa, untuk siapa, cara saat ini>
+## Problem
+<1–3 sentences: what problem, for whom, how it is handled today>
 
-## Pengguna
-- <Peran> — <kebutuhan utama>
+## Users
+- <Role> — <main need>
 
-## Tujuan
-- <hasil yang diharapkan, sebisa mungkin terukur>
+## Goals
+- <expected outcome, measurable where possible>
 
-**Bukan tujuan versi ini:** <yang sengaja tidak dikerjakan>
+**Not a goal for this version:** <what is deliberately left out>
 
-## Fitur
+## Features
 
-| ID | Fitur | Prioritas | Butuh UI |
-|----|-------|-----------|----------|
-| FR-001 | Pengunjung melihat daftar layanan | Must | Ya |
-| FR-002 | Pengunjung mengirim form kontak | Must | Ya |
-| FR-003 | Admin menerima email notifikasi kontak | Should | Tidak |
+| ID | Feature | Priority | Needs UI |
+|----|---------|----------|----------|
+| FR-001 | Visitors see the list of services | Must | Yes |
+| FR-002 | Visitors send the contact form | Must | Yes |
+| FR-003 | Admin receives an email notification for each contact | Should | No |
 
-### FR-001 — Daftar layanan
-- AC: Given halaman Layanan dibuka, Then semua layanan aktif tampil dengan judul, deskripsi, harga.
-- AC: Given tidak ada layanan, Then tampil pesan kosong yang jelas.
+### FR-001 — Service list
+- AC: Given the Services page is opened, Then every active service shows its title, description, and price.
+- AC: Given there are no services, Then a clear empty message is shown.
 
-### FR-002 — Form kontak
-- AC: Given nama, email valid, dan pesan terisi, When kirim, Then pesan tersimpan dan tampil konfirmasi.
-- AC: Given email tidak valid, Then form menolak dengan pesan error di field email.
+### FR-002 — Contact form
+- AC: Given a name, a valid email, and a message, When sent, Then the message is saved and a confirmation is shown.
+- AC: Given an invalid email, Then the form rejects it with an error on the email field.
 
-## Kebutuhan non-fungsional (hanya bila perlu)
-| ID | Kebutuhan | Target | Cara cek |
-|----|-----------|--------|----------|
-| NFR-001 | Performa halaman utama | LCP < 2.5 dtk di 4G | Lighthouse |
+## Non-functional requirements (only when needed)
+| ID | Requirement | Target | How to check |
+|----|-------------|--------|--------------|
+| NFR-001 | Home page performance | LCP < 2.5 s on 4G | Lighthouse |
 
-## Batasan
-<tenggat, hosting, budget, integrasi, bahasa>
+## Constraints
+<deadline, hosting, budget, integrations, language>
 
-## Asumsi dan pertanyaan terbuka
-- [Asumsi] …
-- OQ-001 — … (memblokir: FR-00x?)
+## Assumptions and open questions
+- [Assumption] …
+- OQ-001 — … (blocks: FR-00x?)
 ```
 
-Aturan singkat:
-- AC konkret dan bisa diuji, termasuk satu kasus gagal yang penting.
-- NFR punya angka atau cara cek, bukan "cepat"/"aman".
-- Prioritas eksplisit; Must = wajib ada di versi pertama.
+Short rules:
+- Acceptance criteria are concrete and testable, including one important failure case.
+- NFRs have a number or a way to check them, never just "fast"/"secure".
+- Priorities are explicit; Must = required in the first version.
+- In the Needs UI column, `No` (or `Tidak`) marks an FR without a page; `check_artifacts.py` reads it.

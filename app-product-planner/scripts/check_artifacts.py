@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
-"""Cek keterlacakan artefak app-product-planner (stdlib saja).
+"""Traceability checker for app-product-planner artifacts (stdlib only).
 
-Pemakaian:
-  python check_artifacts.py <folder-perencanaan> [--json]
-  python check_artifacts.py <folder-perencanaan> --next [N]
+Usage:
+  python check_artifacts.py <planning-folder> [--json]
+  python check_artifacts.py <planning-folder> --next [N]
   python check_artifacts.py --self-test
 
---next: cetak N task terbuka berikutnya (bukan BLOCKED, semua Dep sudah [x]) beserta
-pointer file:line ke definisi ID yang dirujuk. Untuk melanjutkan implementasi di sesi
-baru tanpa membaca semua artefak.
+--next: print the next N open tasks (not BLOCKED, every Dep already [x]) with
+file:line pointers to where each referenced ID is defined. Lets a new session resume
+implementation without reading every artifact.
 
-Mencocokkan ID secara tekstual:
-  - FR di PRD.md yang tidak disebut di PLAN.md (FR bertanda "Tidak" di tabel = non-UI, dilaporkan terpisah)
-  - SCR di PLAN.md tanpa file prototype (prototype wajib) (nama file scr-xxx, atau ID disebut di file non-.md di prototype/)
-  - SCR tanpa wireframe (heading di UI.md), COMP di UI.md tanpa SCR pemakai
-  - FR, SCR, dan COMP yang tidak disebut di implementation.md
-  - Jumlah task - [ ] / - [x] / BLOCKED di implementation.md
+IDs are matched textually:
+  - FRs in PRD.md not mentioned in PLAN.md (FRs marked "No"/"Tidak" in the table = non-UI, reported separately)
+  - SCRs in PLAN.md without a prototype file (file named scr-xxx, or ID claimed in a non-.md file under prototype/)
+  - SCRs without a wireframe (heading in UI.md), COMPs in UI.md not used by any SCR
+  - FRs, SCRs, and COMPs not mentioned in implementation.md
+  - Count of - [ ] / - [x] / BLOCKED tasks in implementation.md
 """
 import json
 import re
@@ -30,7 +30,7 @@ STRUCK_RE = re.compile(r"~~\s*((?:FR|SCR|COMP)-\d{3,}[a-z]?)\s*~~")
 HEADER_RE = re.compile(r"(?:<!--|/\*|//)\s*(SCR-\d{3,}[^\n]*)")
 TASK_RE =re.compile(r"^\s*[-*] \[( |x|X)\] \*\*(TASK-\d{3,})")
 REF_RE = re.compile(r"\b(?:FR|NFR|SCR|COMP)-\d{3,}[a-z]?\b")
-DEP_RE = re.compile(r"Dep(?:endensi)?\W*([^\u00b7\n]*)")
+DEP_RE = re.compile(r"Dep(?:endencies|endensi)?\W*([^\u00b7\n]*)")
 TASK_ID_RE = re.compile(r"\bTASK-\d{3,}\b")
 DEF_FILE = {"FR": ["PRD.md"], "NFR": ["PRD.md"], "SCR": ["PLAN.md", "UI.md"], "COMP": ["UI.md"]}
 
@@ -39,7 +39,7 @@ RANGE_RE = re.compile(r"\b(FR|NFR|SCR|COMP)-(\d{3,})\s*(?:\.\.|–|—)\s*(?:\1-
 
 
 def expand_ranges(text: str) -> str:
-    """Tambahkan ID di dalam rentang "COMP-001..COMP-009" agar ikut terhitung."""
+    """Append the IDs inside ranges like "COMP-001..COMP-009" so they are counted too."""
     extra = [f"{p}-{n:0{len(a)}d}" for p, a, b in RANGE_RE.findall(text)
              for n in range(int(a), int(b) + 1) if int(b) - int(a) < 200]
     return text + ("\n" + " ".join(extra) if extra else "")
@@ -54,7 +54,7 @@ def ids(regex, text, struck):
 
 
 def non_ui_frs(prd: str) -> set:
-    """FR yang barisnya di tabel PRD punya sel 'Tidak' (kolom Butuh UI)."""
+    """FRs whose PRD table row has a 'No'/'Tidak' cell (the Needs UI column)."""
     out = set()
     for line in prd.splitlines():
         s = line.strip()
@@ -94,8 +94,8 @@ def check(root: Path) -> dict:
             m = re.search(r"scr-(\d{3,}[a-z]?)", f.name, re.I)
             if m:
                 proto_hits.add("SCR-" + m.group(1).lower())
-            # Halaman mengklaim ID lewat komentar header: <!-- SCR-002 Kasir + SCR-002a Modal | FR-... -->
-            # Hanya bagian sebelum "|" yang dihitung, agar index/daftar tautan tidak dianggap prototype.
+            # Pages claim IDs via a header comment: <!-- SCR-002 Cashier + SCR-002a Modal | FR-... -->
+            # Only the part before "|" counts, so an index/link list is not mistaken for a prototype.
             for claim in HEADER_RE.findall(read(f)):
                 proto_hits |= set(SCR_RE.findall(claim.split("|")[0]))
 
@@ -131,7 +131,7 @@ def check(root: Path) -> dict:
 
 
 def task_blocks(impl: str) -> list:
-    """Blok task: baris judul + sub-bullet ber-indent sampai task/heading/baris tanpa indent berikutnya."""
+    """Task block: title line + indented sub-bullets up to the next task/heading/unindented line."""
     blocks, cur = [], None
     for line in impl.splitlines():
         m = TASK_RE.match(line)
@@ -147,7 +147,7 @@ def task_blocks(impl: str) -> list:
 
 
 def def_line(root: Path, ref: str, cache: dict):
-    """file:line definisi ID di tiap file definisinya (SCR: PLAN.md + wireframe di UI.md)."""
+    """file:line where the ID is defined, in each defining file (SCR: PLAN.md + UI.md wireframe + prototype)."""
     out = [_def_line(root, ref, f, cache) for f in DEF_FILE[ref.split("-")[0]]]
     if ref.startswith("SCR-"):
         out += [str(f.relative_to(root)) for f in sorted((root / "prototype").rglob(f"{ref.lower()}-*.html"))]
@@ -155,7 +155,7 @@ def def_line(root: Path, ref: str, cache: dict):
 
 
 def _def_line(root: Path, ref: str, fname: str, cache: dict):
-    """Utamakan baris yang diawali ID (heading/tabel/bullet), lalu sebutan pertama."""
+    """Prefer a line that starts with the ID (heading/table/bullet), else the first mention."""
     if fname not in cache:
         cache[fname] = read(root / fname).splitlines()
     first = None
@@ -164,19 +164,19 @@ def _def_line(root: Path, ref: str, fname: str, cache: dict):
             if line.lstrip("#|*- \t").startswith(ref):
                 return f"{fname}:{i}"
             first = first or f"{fname}:{i}"
-    return first or f"{fname}: (tidak ditemukan)"
+    return first or f"{fname}: (not found)"
 
 
 def next_tasks(root: Path, n: int = 1) -> str:
     impl = read(root / "implementation.md")
     if not impl:
-        return "implementation.md tidak ada."
+        return "implementation.md not found."
     blocks = task_blocks(impl)
     done = {b["id"] for b in blocks if b["done"]}
     out, skipped, picked = [], [], 0
-    progres = [l for l in impl.splitlines()[:15] if "progres" in l.lower()]
-    out.append(f"Task: {len(done)} selesai / {len(blocks)} total")
-    out += progres
+    progress = [l for l in impl.splitlines()[:15] if "progres" in l.lower()]  # Progress / Progres
+    out.append(f"Tasks: {len(done)} done / {len(blocks)} total")
+    out += progress
     for b in blocks:
         if b["done"] or picked >= n:
             continue
@@ -186,41 +186,41 @@ def next_tasks(root: Path, n: int = 1) -> str:
             continue
         deps = {t for m in DEP_RE.findall(text) for t in TASK_ID_RE.findall(m)} - done
         if deps:
-            skipped.append(f"{b['id']} (tunggu {', '.join(sorted(deps))})")
+            skipped.append(f"{b['id']} (waiting on {', '.join(sorted(deps))})")
             continue
         picked += 1
         cache = {}
-        out += ["", text, "Definisi ID:"]
-        out += [f"  {r} -> {def_line(root, r, cache)}" for r in sorted(set(REF_RE.findall(expand_ranges(text))))] or ["  (tidak ada)"]
+        out += ["", text, "ID definitions:"]
+        out += [f"  {r} -> {def_line(root, r, cache)}" for r in sorted(set(REF_RE.findall(expand_ranges(text))))] or ["  (none)"]
     if not picked:
-        out.append("\nTidak ada task terbuka yang siap dikerjakan.")
+        out.append("\nNo open task is ready to start.")
     if skipped:
-        out.append("Dilewati: " + "; ".join(skipped))
+        out.append("Skipped: " + "; ".join(skipped))
     return "\n".join(out)
 
 
 def show(r: dict) -> str:
     def lst(x):
-        return ", ".join(x) if x else "tidak ada"
-    lines = ["Artefak: " + ", ".join(f"{k}{'' if v else ' (TIDAK ADA)'}" for k, v in r["files"].items())]
+        return ", ".join(x) if x else "none"
+    lines = ["Artifacts: " + ", ".join(f"{k}{'' if v else ' (MISSING)'}" for k, v in r["files"].items())]
     lines.append(f"FR: {r['fr_total']} (non-UI: {lst(r['fr_non_ui'])})")
-    lines.append(f"FR UI tidak disebut di PLAN: {lst(r['fr_ui_without_scr_mention'])}")
-    proto = f" | tanpa file prototype: {lst(r['scr_without_prototype'])}" + ("" if r["prototype_exists"] else " (folder prototype/ belum ada)")
+    lines.append(f"UI FRs not mentioned in PLAN: {lst(r['fr_ui_without_scr_mention'])}")
+    proto = f" | without prototype file: {lst(r['scr_without_prototype'])}" + ("" if r["prototype_exists"] else " (prototype/ folder missing)")
     lines.append(f"SCR: {r['scr_total']}{proto}")
     if r["scr_without_wireframe"] is None:
-        lines.append("UI.md belum ada (wireframe dan komponen wajib sebelum implementation.md).")
+        lines.append("UI.md missing (wireframes and components are required before implementation.md).")
     else:
-        lines.append(f"SCR tanpa wireframe: {lst(r['scr_without_wireframe'])}")
-        lines.append(f"COMP: {r['comp_total']} | tanpa SCR pemakai: {lst(r['comp_unused'])}")
+        lines.append(f"SCRs without wireframe: {lst(r['scr_without_wireframe'])}")
+        lines.append(f"COMP: {r['comp_total']} | not used by any SCR: {lst(r['comp_unused'])}")
     if r["impl_exists"]:
-        lines.append(f"Task: {r['tasks_done']} selesai / {r['tasks_total']} total | blocked: {len(r['tasks_blocked'])} ({lst(r['tasks_blocked'])})")
-        lines.append(f"FR tanpa task: {lst(r['fr_without_task'])}")
-        lines.append(f"SCR tanpa task: {lst(r['scr_without_task'])}")
-        lines.append(f"COMP tanpa task: {lst(r['comp_without_task'])}")
+        lines.append(f"Tasks: {r['tasks_done']} done / {r['tasks_total']} total | blocked: {len(r['tasks_blocked'])} ({lst(r['tasks_blocked'])})")
+        lines.append(f"FRs without task: {lst(r['fr_without_task'])}")
+        lines.append(f"SCRs without task: {lst(r['scr_without_task'])}")
+        lines.append(f"COMPs without task: {lst(r['comp_without_task'])}")
         if r["duplicate_task_ids"]:
-            lines.append(f"ID task duplikat: {lst(r['duplicate_task_ids'])}")
+            lines.append(f"Duplicate task IDs: {lst(r['duplicate_task_ids'])}")
     else:
-        lines.append("implementation.md belum ada.")
+        lines.append("implementation.md missing.")
     return "\n".join(lines)
 
 
@@ -263,11 +263,11 @@ def self_test():
         (root / "implementation.md").write_text(
             "- [x] **TASK-001 — a** FR-001\n- [ ] **TASK-002 — ⛔ BLOCKED: b**\n"
             "- [ ] **TASK-003 — c** — Dep: TASK-002 · FR-001\n- [ ] **TASK-004 — d**\n"
-            "  - **Referensi:** FR-003, SCR-001, COMP-001\n  - **Dependensi:** TASK-001\n## E\n",
+            "  - **Referensi:** FR-003, SCR-001, COMP-001\n  - **Dependencies:** TASK-001\n## E\n",
             encoding="utf-8")
         nx = next_tasks(root)
         assert "TASK-004 — d" in nx and "**Referensi:** FR-003" in nx and "## E" not in nx, nx
-        assert "TASK-002 (BLOCKED)" in nx and "TASK-003 (tunggu TASK-002)" in nx, nx
+        assert "TASK-002 (BLOCKED)" in nx and "TASK-003 (waiting on TASK-002)" in nx, nx
         assert "FR-003 -> PRD.md:5" in nx and "SCR-001 -> PLAN.md:1, UI.md:1, prototype/pages/scr-001-home.html" in nx and "COMP-001 -> UI.md:5" in nx, nx
     print("self-test OK")
 
@@ -282,7 +282,7 @@ def main(argv):
         return 2
     root = Path(args[0])
     if not root.is_dir():
-        print(f"Folder tidak ditemukan: {root}")
+        print(f"Folder not found: {root}")
         return 2
     if "--next" in argv:
         n = int(args[1]) if len(args) > 1 and args[1].isdigit() else 1

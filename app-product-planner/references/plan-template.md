@@ -1,42 +1,42 @@
-# Template PLAN.md
+# PLAN.md template
 
-Satu file untuk halaman, desain, stack, dan status. Hapus bagian yang tidak relevan.
+One file for pages, design, stack, and status. Delete sections that do not apply. Write it in the user's language.
 
 ```markdown
-# PLAN — <Nama Proyek>
+# PLAN — <Project Name>
 
-Versi 1.0 · YYYY-MM-DD
+Version 1.0 · YYYY-MM-DD
 
 ## Status
-| Tahap | Status | Tanggal |
-|-------|--------|---------|
-| PRD | disetujui | YYYY-MM-DD |
-| PLAN | menunggu persetujuan | |
-| UI (wireframe + komponen) | belum | |
-| Prototype | belum | |
-| Implementasi | belum | |
+| Stage | Status | Date |
+|-------|--------|------|
+| PRD | approved | YYYY-MM-DD |
+| PLAN | awaiting approval | |
+| UI (wireframes + components) | not started | |
+| Prototype | not started | |
+| Implementation | not started | |
 
-Keputusan: <tanggal> — <keputusan> (sumber: pengguna / rekomendasi disetujui)
-Langkah berikutnya: …
+Decisions: <date> — <decision> (source: user / approved recommendation)
+Next step: …
 
-## Halaman
+## Pages
 
-<N> halaman, karena: <alur/fitur yang menuntutnya>.
+<N> pages, because: <the flows/features that require them>.
 
-| ID | Halaman | Route | FR | Isi utama | State penting |
-|----|---------|-------|----|-----------|---------------|
-| SCR-001 | Beranda | `/` | FR-001 | hero, ringkasan layanan, CTA kontak | — |
-| SCR-002 | Kontak | `/contact` | FR-002 | form nama/email/pesan | error validasi, sukses, gagal kirim |
+| ID | Page | Route | FR | Main content | Key states |
+|----|------|-------|----|--------------|------------|
+| SCR-001 | Home | `/` | FR-001 | hero, service summary, contact CTA | — |
+| SCR-002 | Contact | `/contact` | FR-002 | name/email/message form | validation error, success, send failure |
 
-Navigasi: header (Beranda, Layanan, Kontak) · footer.
-Modal/overlay: <bila ada, sebut induk SCR-nya>.
-Ditunda: <halaman yang tidak masuk versi ini>.
+Navigation: header (Home, Services, Contact) · footer.
+Modals/overlays: <if any, name the parent SCR>.
+Deferred: <pages not in this version>.
 
-## Desain
-Arah visual: <2–3 kalimat: kesan, referensi, mobile-first?>
+## Design
+Visual direction: <2–3 sentences: feel, references, mobile-first?>
 
-Tokens (sumber kebenaran; di kode jadi CSS variables / theme config):
-| Token | Nilai |
+Tokens (single source of truth; in code they become CSS variables / theme config):
+| Token | Value |
 |-------|-------|
 | color-primary | #1D4ED8 |
 | color-text | #111827 |
@@ -45,20 +45,20 @@ Tokens (sumber kebenaran; di kode jadi CSS variables / theme config):
 | space-unit | 4px |
 | radius | 8px |
 
-Breakpoint: 360 / 768 / 1280. Aksesibilitas: WCAG 2.2 AA [Rekomendasi]; kontras primary vs bg: 4.5:1 ✔.
-Komponen dan wireframe: lihat [UI.md](UI.md).
+Breakpoints: 360 / 768 / 1280. Accessibility: WCAG 2.2 AA [Recommendation]; contrast primary vs bg: 4.5:1 ✔.
+Components and wireframes: see [UI.md](UI.md).
 
 ## Stack
-| Bagian | Pilihan | Versi (dicek Context7) | Alasan |
-|--------|---------|------------------------|--------|
+| Part | Choice | Version (checked via Context7) | Reason |
+|------|--------|--------------------------------|--------|
 | Framework | Next.js | 15.x | SSG + form API route |
 | Styling | Tailwind CSS | 4.x | tokens via theme |
-| Hosting | Vercel | — | gratis untuk skala ini |
+| Hosting | Vercel | — | free at this scale |
 
-Konvensi: kode in English, struktur folder mengikuti docs framework, linter/formatter: <…>.
+Conventions: code in English, folder structure follows the framework docs, linter/formatter: <…>.
 ```
 
-Aturan singkat:
-- Jumlah halaman dari alur, bukan dari jumlah fitur. Satu halaman boleh memenuhi beberapa FR.
-- Setiap FR yang `Butuh UI: Ya` muncul di kolom FR minimal satu halaman.
-- Stack yang belum dikonfirmasi pengguna ditandai [Rekomendasi].
+Short rules:
+- Derive the page count from flows, not from the number of features. One page may cover several FRs.
+- Every FR with `Needs UI: Yes` appears in the FR column of at least one page.
+- A stack the user has not confirmed is marked [Recommendation].

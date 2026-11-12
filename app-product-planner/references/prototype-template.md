@@ -1,55 +1,55 @@
-# Template prototype/
+# prototype/ template
 
-Prototype HTML/CSS/JS statis semua halaman. Dibuat setelah UI.md disetujui, disetujui sebelum implementation.md.
+A static HTML/CSS/JS prototype of every page. Created after UI.md is approved; approved before implementation.md.
 
-## Struktur
+## Structure
 
 ```
 prototype/
-├── index.html              # daftar halaman + tautan (hub)
+├── index.html              # page list + links (hub)
 ├── README.md
 ├── assets/
-│   ├── tokens.css          # CSS variables dari PLAN.md (satu sumber nilai)
-│   ├── components.css      # satu blok kelas per COMP-xxx, hanya pakai var(--…)
-│   ├── app.js              # interaksi bersama (menu, modal, validasi demo)
-│   └── mock-data.js        # data contoh, ditandai MOCK
+│   ├── tokens.css          # CSS variables from PLAN.md (single source of values)
+│   ├── components.css      # one class block per COMP-xxx, using var(--…) only
+│   ├── app.js              # shared interactions (menu, modal, demo validation)
+│   └── mock-data.js        # sample data, marked MOCK
 └── pages/
     ├── scr-001-home.html
     └── scr-002-contact.html
 ```
 
-## Aturan
+## Rules
 
-- Nama file halaman `scr-xxx-<slug>.html`. Baris pertama setelah `<!doctype html>`:
+- Page file name `scr-xxx-<slug>.html`. First line after `<!doctype html>`:
   `<!-- SCR-002 Contact + SCR-002a Success modal | FR-002 -->`
-  (bagian sebelum `|` = SCR yang dicakup file ini; dibaca `check_artifacts.py`).
-- Setiap halaman memuat `tokens.css` lalu `components.css`. Tidak ada `style=""` atau nilai warna/spacing/font di luar tokens.
-- Kelas komponen diberi komentar ID: `/* COMP-002 Button */ .btn, .btn--primary, .btn:disabled …`.
-- Susunan section persis mengikuti wireframe UI.md; mobile-first, cek di 360 dan 1280.
-- Navigasi alur utama nyata (tautan antarhalaman). Aksi yang butuh backend disimulasikan di `app.js` dan ditandai `// MOCK`.
-- State penting bisa dicoba: misal submit form kosong → error; parameter `?state=empty` untuk tampilan kosong.
-- HTML semantik dan aksesibel: `<label>` untuk input, `alt`, fokus terlihat, landmark (`header`, `main`, `nav`, `footer`).
-- Nama kelas, file, id, dan komentar dalam bahasa Inggris; teks tampilan mengikuti bahasa produk.
+  (the part before `|` = the SCRs this file covers; read by `check_artifacts.py`).
+- Every page loads `tokens.css`, then `components.css`. No `style=""` and no color/spacing/font values outside the tokens.
+- Component classes carry an ID comment: `/* COMP-002 Button */ .btn, .btn--primary, .btn:disabled …`.
+- Section order matches the UI.md wireframe exactly; mobile-first, checked at 360 and 1280.
+- Main-flow navigation is real (links between pages). Actions that need a backend are simulated in `app.js` and marked `// MOCK`.
+- Key states can be tried: e.g. submitting an empty form → error; a `?state=empty` parameter for the empty view.
+- Semantic, accessible HTML: `<label>` for inputs, `alt`, visible focus, landmarks (`header`, `main`, `nav`, `footer`).
+- Class names, file names, ids, and comments are in English; visible text follows the product's language.
 
 ## README.md
 
 ```markdown
-# Prototype — <Nama Proyek>
+# Prototype — <Project Name>
 
-Buka: `prototype/index.html` di browser (tanpa server).
+Open: `prototype/index.html` in a browser (no server needed).
 
-| SCR | Halaman | File | Status |
-|-----|---------|------|--------|
-| SCR-001 | Beranda | [pages/scr-001-home.html](pages/scr-001-home.html) | selesai |
+| SCR | Page | File | Status |
+|-----|------|------|--------|
+| SCR-001 | Home | [pages/scr-001-home.html](pages/scr-001-home.html) | done |
 
-Bisa dicoba: alur kontak (kirim kosong → error, isi benar → sukses), `?state=empty` di Beranda.
-Disimulasikan (MOCK): pengiriman form, data layanan.
-Keterbatasan: tanpa backend, tanpa autentikasi nyata.
+Try: the contact flow (send empty → error, fill in correctly → success), `?state=empty` on Home.
+Simulated (MOCK): form submission, service data.
+Limitations: no backend, no real authentication.
 ```
 
-## Verifikasi sebelum minta persetujuan
+## Verify before asking for approval
 
-1. `check_artifacts.py <folder>` → "SCR tanpa file prototype: tidak ada".
-2. Semua tautan antarhalaman dan dari `index.html` berfungsi.
-3. `grep -nE '#[0-9a-fA-F]{3,6}|[0-9]+px' prototype/pages prototype/assets/components.css` → tidak ada nilai di luar tokens (kecuali yang memang sengaja, sebutkan).
-4. Buka di browser bila tersedia; jika tidak, katakan bahwa tampilan belum dicek visual.
+1. `check_artifacts.py <folder>` → "SCR without prototype file: none".
+2. Every link between pages and from `index.html` works.
+3. `grep -nE '#[0-9a-fA-F]{3,6}|[0-9]+px' prototype/pages prototype/assets/components.css` → no values outside the tokens (except deliberate ones; name them).
+4. Open it in a browser if available; if not, say the visuals have not been checked.

@@ -1,6 +1,6 @@
 schema_version: "1.1"
 name: resume-implementation-lean
 expected_outcome: |
-  Sesi baru melanjutkan implementasi dari implementation.md dengan hemat token: menjalankan check_artifacts.py --next (atau membaca bagian kecil), tidak membaca PRD/PLAN/references secara penuh, tidak memulai interview, mengerjakan task terbuka pertama yang siap (TASK-001), dan tidak menandai [x] tanpa bukti.
+  A new session resumes implementation from implementation.md in token-saving mode: runs check_artifacts.py --next (or reads small sections), does not read PRD/PLAN/UI/references in full, does not start an interview, works on the first ready open task (TASK-001), and does not mark [x] without evidence.
 context:
   scaffold_script: place-files.sh

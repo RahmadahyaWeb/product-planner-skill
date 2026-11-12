@@ -1,4 +1,4 @@
 schema_version: "1.1"
 name: detailed-brief-asks-gaps-only
 expected_outcome: |
-  Claude merangkum yang sudah diketahui tanpa menanyakan ulang, lalu hanya menggali kekosongan penting: edge cases (bentrok, no-show, batas waktu), peran/hak akses detail, metrik keberhasilan, format prototype/brand. Asumsi dan keputusan yang belum disetujui ditandai. Belum membuat PRD.
+  Claude summarizes what is already known without re-asking, then digs only into the important gaps: edge cases (conflicts, no-shows, time limits), detailed roles/permissions, success metrics, prototype format/brand. Unapproved assumptions and decisions are labeled. No PRD is created yet. Replies in the user's language (Indonesian).

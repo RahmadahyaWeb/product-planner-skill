@@ -7,7 +7,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Skill](https://img.shields.io/badge/Claude-Agent%20Skill-D97757)](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview)
 [![Context7](https://img.shields.io/badge/docs-Context7-black)](https://github.com/upstash/context7)
-[![Bahasa](https://img.shields.io/badge/bahasa-Indonesia-red)](#)
+[![Skill language](https://img.shields.io/badge/skill-English-blue)](#) [![Replies](https://img.shields.io/badge/replies-any%20language-green)](#)
 
 [Cara kerja](#-cara-kerja) · [Instalasi](#-instalasi) · [Cara pakai](#-cara-pakai) · [File yang dihasilkan](#-file-yang-dihasilkan) · [FAQ](#-faq)
 
@@ -226,7 +226,7 @@ Bawa saja. Agent memakainya sebagai input, memetakan ke struktur skill, menandai
 <details>
 <summary><b>Dokumennya berbahasa apa?</b></summary>
 
-Mengikuti bahasa yang kamu pakai. Skill ini ditulis dalam Bahasa Indonesia, tapi tetap bekerja jika kamu menulis dalam bahasa Inggris. Kode selalu dalam bahasa Inggris.
+Instruksi skill ditulis dalam bahasa Inggris, tapi agent membalas dan menulis dokumen (PRD, PLAN, UI) dalam bahasa yang kamu pakai, termasuk Bahasa Indonesia. Kode selalu dalam bahasa Inggris.
 </details>
 
 <details>

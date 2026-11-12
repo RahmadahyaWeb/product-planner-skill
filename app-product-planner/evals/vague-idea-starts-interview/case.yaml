@@ -1,4 +1,4 @@
 schema_version: "1.1"
 name: vague-idea-starts-interview
 expected_outcome: |
-  Claude membuka dengan sambutan singkat dan penjelasan alur, lalu mengajukan ronde pertama interview (3-5 pertanyaan) tentang masalah, pengguna, tujuan, dan ruang lingkup. Tidak ada PRD.md, PLAN.md, UI.md, atau implementation.md yang dibuat.
+  Claude opens with a short greeting and a one-line explanation of the flow, then asks the first interview round (3-5 questions) about the problem, users, goals, and scope, in the user's language (Indonesian). No PRD.md, PLAN.md, UI.md, or implementation.md is created.
