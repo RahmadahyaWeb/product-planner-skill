@@ -1,0 +1,5 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/components.css"><script src="../assets/mock-data.js"></script><script src="../assets/app.js"></script><title>Laporan — KasirKu</title></head>
+<!-- SCR-004 Laporan Harian | FR-005, BR-002 | FLOW-004 | COMP-008, COMP-009 -->
+<body><main id="m"></main><nav class="bottomnav" id="nav" aria-label="Navigasi utama"></nav>
+<script>renderNav("scr-004");const r=MOCK.todayReport,empty=new URLSearchParams(location.search).get("state")==="empty";
+document.getElementById("m").innerHTML='<h1>Laporan hari ini</h1>'+(empty?'<p>Belum ada transaksi hari ini.</p>':'<div class="stat">Total penjualan<div class="money">'+rp(r.total)+'</div></div><div class="stat">Jumlah transaksi<div class="money">'+r.count+'</div></div><div class="stat">Terlaris<ol>'+r.top.map(t=>'<li>'+t+'</li>').join("")+'</ol></div>');</script></body></html>

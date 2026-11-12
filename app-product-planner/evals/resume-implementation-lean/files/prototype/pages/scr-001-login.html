@@ -1,0 +1,11 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/components.css"><script src="../assets/mock-data.js"></script><script src="../assets/app.js"></script><title>Masuk — KasirKu</title></head>
+<!-- SCR-001 Login | FR-001 | FLOW-001 | COMP-001, COMP-002 -->
+<body><main><h1>Masuk ke KasirKu</h1>
+<form id="f"><div class="field"><label for="hp">Nomor HP</label><input id="hp" inputmode="tel" value="081234567890"></div>
+<div class="field"><label for="otp">Kode OTP (demo: 123456)</label><input id="otp" inputmode="numeric" aria-describedby="otpErr"><span class="error" id="otpErr" role="alert"></span></div>
+<button class="btn btn--primary" style="width:100%">Masuk</button></form>
+<p><small>OTP disimulasikan — tidak ada SMS/WA nyata.</small></p></main>
+<script>let fails=0;document.getElementById("f").onsubmit=e=>{e.preventDefault();const ok=document.getElementById("otp").value==="123456";
+if(ok){location.href=role()==="pemilik"?"scr-004-laporan.html":"scr-002-kasir.html";return}
+fails++;document.getElementById("otpErr").textContent=fails>=3?"Terlalu banyak percobaan. Coba lagi dalam 5 menit.":"Kode OTP salah. Sisa percobaan: "+(3-fails);
+if(fails>=3)document.getElementById("otp").disabled=true};</script></body></html>

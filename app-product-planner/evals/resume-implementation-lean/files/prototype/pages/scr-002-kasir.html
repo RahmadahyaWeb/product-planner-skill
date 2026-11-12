@@ -1,0 +1,21 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/components.css"><script src="../assets/mock-data.js"></script><script src="../assets/app.js"></script><title>Kasir — KasirKu</title></head>
+<!-- SCR-002 Kasir + SCR-002a Modal Bayar | FR-002, FR-003, BR-001 | FLOW-002 | COMP-001, COMP-003, COMP-004, COMP-005, COMP-006, COMP-007, COMP-009 -->
+<body><main><h1>Kasir</h1><div id="banner"></div><div class="grid" id="grid"></div><h2>Keranjang</h2><ul id="cart"></ul></main>
+<div class="cartbar"><span class="money" id="total">Rp0</span><button class="btn btn--primary" id="pay" disabled>Bayar</button></div>
+<dialog id="dlg" aria-labelledby="dlgT"><h2 id="dlgT">Bayar tunai</h2><p>Total: <strong id="dlgTotal"></strong></p>
+<div class="field"><label for="cash">Uang diterima</label><input id="cash" inputmode="numeric" aria-describedby="cashErr"><span class="error" id="cashErr" role="alert"></span></div>
+<p>Kembalian: <strong id="change">Rp0</strong></p><button class="btn" id="cancel">Batal</button> <button class="btn btn--primary" id="save">Simpan</button></dialog>
+<nav class="bottomnav" id="nav" aria-label="Navigasi utama"></nav>
+<script>renderNav("scr-002");const cart={};const P=MOCK.products.filter(p=>p.active);
+function total(){return Object.entries(cart).reduce((s,[id,q])=>s+P.find(p=>p.id==id).price*q,0)}
+function render(){document.getElementById("grid").innerHTML=P.map(p=>'<button class="tile" data-id="'+p.id+'">'+p.name+'<small>'+rp(p.price)+' · stok '+p.stock+'</small></button>').join("");
+const over=Object.entries(cart).filter(([id,q])=>q>P.find(p=>p.id==id).stock);
+document.getElementById("banner").innerHTML=over.map(([id])=>{const p=P.find(x=>x.id==id);return '<div class="banner" role="alert">Stok '+p.name+' tersisa '+p.stock+'</div>'}).join("");
+document.getElementById("cart").innerHTML=Object.entries(cart).map(([id,q])=>'<li>'+P.find(p=>p.id==id).name+' × '+q+'</li>').join("");
+document.getElementById("total").textContent=rp(total());document.getElementById("pay").disabled=!Object.keys(cart).length||over.length>0}
+document.getElementById("grid").onclick=e=>{const b=e.target.closest(".tile");if(!b)return;cart[b.dataset.id]=(cart[b.dataset.id]||0)+1;render()};
+const dlg=document.getElementById("dlg");document.getElementById("pay").onclick=()=>{document.getElementById("dlgTotal").textContent=rp(total());dlg.showModal()};
+document.getElementById("cash").oninput=e=>{document.getElementById("change").textContent=rp(Math.max(0,(+e.target.value||0)-total()))};
+document.getElementById("cancel").onclick=()=>dlg.close();
+document.getElementById("save").onclick=()=>{if((+document.getElementById("cash").value||0)<total()){document.getElementById("cashErr").textContent="Uang diterima kurang dari total.";return}
+dlg.close();toast("Transaksi tersimpan. Kembalian "+document.getElementById("change").textContent);for(const k in cart)delete cart[k];render()};render();</script></body></html>

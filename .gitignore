@@ -1,0 +1,8 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.skill
+dist/
+# local working files, not part of the skill
+PROMPT.md
+app-product-planner-workspace/

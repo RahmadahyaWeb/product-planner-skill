@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: detailed-brief-asks-gaps-only
+expected_outcome: |
+  Claude merangkum yang sudah diketahui tanpa menanyakan ulang, lalu hanya menggali kekosongan penting: edge cases (bentrok, no-show, batas waktu), peran/hak akses detail, metrik keberhasilan, format prototype/brand. Asumsi dan keputusan yang belum disetujui ditandai. Belum membuat PRD.

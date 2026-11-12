@@ -1,0 +1,10 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="../assets/tokens.css"><link rel="stylesheet" href="../assets/components.css"><script src="../assets/mock-data.js"></script><script src="../assets/app.js"></script><title>Produk — KasirKu</title></head>
+<!-- SCR-003 Produk | FR-004, BR-002 | FLOW-003 | COMP-001, COMP-002, COMP-007, COMP-009 -->
+<body><main id="m"></main><nav class="bottomnav" id="nav" aria-label="Navigasi utama"></nav>
+<script>renderNav("scr-003");const m=document.getElementById("m");
+if(role()!=="pemilik"){m.innerHTML='<h1>Produk</h1><div class="banner" role="alert">Hanya Pemilik yang dapat mengelola produk.</div><a href="scr-002-kasir.html">Kembali ke Kasir</a>'}
+else{const draw=()=>{m.innerHTML='<h1>Produk</h1><form id="f"><div class="field"><label for="n">Nama</label><input id="n"></div><div class="field"><label for="pr">Harga</label><input id="pr" inputmode="numeric"></div><div class="field"><label for="st">Stok</label><input id="st" inputmode="numeric"></div><span class="error" id="err" role="alert"></span><button class="btn btn--primary">Tambah produk</button></form><ul>'+MOCK.products.map(p=>'<li>'+p.name+' — '+rp(p.price)+' · stok '+p.stock+(p.active?' <button class="btn btn--danger" data-id="'+p.id+'">Nonaktifkan</button>':' (nonaktif)')+'</li>').join("")+'</ul>';
+document.getElementById("f").onsubmit=e=>{e.preventDefault();const n=document.getElementById("n").value.trim(),pr=+document.getElementById("pr").value,st=+document.getElementById("st").value;
+if(!n||!(pr>0)||!(st>=0)){document.getElementById("err").textContent="Isi nama, harga lebih dari 0, dan stok 0 atau lebih.";return}
+MOCK.products.push({id:Date.now(),name:n,price:pr,stock:st,active:true});toast("Produk ditambahkan");draw()};
+m.querySelectorAll("[data-id]").forEach(b=>b.onclick=()=>{if(confirm("Nonaktifkan produk ini?")){MOCK.products.find(p=>p.id==b.dataset.id).active=false;draw()}})};draw()}</script></body></html>

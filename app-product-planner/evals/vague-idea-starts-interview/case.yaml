@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: vague-idea-starts-interview
+expected_outcome: |
+  Claude membuka dengan sambutan singkat dan penjelasan alur, lalu mengajukan ronde pertama interview (3-5 pertanyaan) tentang masalah, pengguna, tujuan, dan ruang lingkup. Tidak ada PRD.md, PLAN.md, UI.md, atau implementation.md yang dibuat.
