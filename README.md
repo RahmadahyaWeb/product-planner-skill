@@ -2,10 +2,11 @@
 
 # 🧭 App Product Planner
 
-**Skill Claude untuk mengubah ide website/aplikasi menjadi rencana, wireframe, prototype, dan kode — langkah demi langkah, dengan persetujuanmu di setiap tahap.**
+**Agent skill untuk Claude dan OpenCode: mengubah ide website/aplikasi menjadi rencana, wireframe, prototype, dan kode — langkah demi langkah, dengan persetujuanmu di setiap tahap.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Skill](https://img.shields.io/badge/Claude-Agent%20Skill-D97757)](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/overview)
+[![OpenCode](https://img.shields.io/badge/OpenCode-Skill-111111)](https://opencode.ai/docs/skills/)
 [![Context7](https://img.shields.io/badge/docs-Context7-black)](https://github.com/upstash/context7)
 [![Skill language](https://img.shields.io/badge/skill-English-blue)](#) [![Replies](https://img.shields.io/badge/replies-any%20language-green)](#)
 
@@ -76,13 +77,51 @@ Skill langsung tersedia di sesi Claude Code berikutnya. Untuk satu proyek saja, 
 
 <sub>Mau build sendiri dari source? `zip -r app-product-planner.skill app-product-planner -x 'app-product-planner/evals/*' '*.DS_Store'`</sub>
 
+### OpenCode
+
+OpenCode membaca skill dari `~/.config/opencode/skills/` (global) atau `.opencode/skills/` (per proyek). OpenCode juga membaca `~/.claude/skills/` dan `.claude/skills/`, jadi kalau skill sudah terpasang untuk Claude Code, OpenCode langsung bisa memakainya.
+
+```bash
+git clone https://github.com/RahmadahyaWeb/product-planner-skill.git
+```
+
+```bash
+mkdir -p ~/.config/opencode/skills && cp -R product-planner-skill/app-product-planner ~/.config/opencode/skills/
+```
+
+Skill muncul otomatis di daftar skill agent. Kamu juga bisa memanggilnya langsung dengan `@app-product-planner` di prompt. Detail: [OpenCode Skills](https://opencode.ai/docs/skills/).
+
 ### Wajib: pasang MCP Context7
 
 Skill ini **mewajibkan** Context7 saat memilih stack dan menulis kode. Tanpa Context7, agent akan berhenti dan meminta izinmu.
 
+**Claude Code**
 ```bash
 claude mcp add context7 -- npx -y @upstash/context7-mcp
 ```
+
+**OpenCode**
+```bash
+opencode mcp add context7 --url https://mcp.context7.com/mcp
+```
+
+atau tambahkan server lokal di `opencode.json` (proyek) atau `~/.config/opencode/opencode.json` (global):
+
+```jsonc
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "context7": {
+        "type": "local",
+        "command": ["npx", "-y", "@upstash/context7-mcp"]
+      }
+    }
+  }
+}
+```
+
+<sub>Bentuk config di atas mengikuti [docs MCP OpenCode](https://opencode.ai/docs/mcp-servers/) terbaru. Versi OpenCode yang lebih lama menaruh server langsung di bawah `"mcp"` (tanpa `"servers"`). Cek dengan `opencode mcp list`.</sub>
 
 Lihat [upstash/context7](https://github.com/upstash/context7) untuk klien lain.
 
@@ -94,7 +133,7 @@ Script `check_artifacts.py` (stdlib saja, tanpa dependency) dipakai untuk mengec
 
 ## 🚀 Cara pakai
 
-Cukup ceritakan idenya. Skill aktif otomatis.
+Cukup ceritakan idenya. Skill aktif otomatis (di OpenCode bisa juga dipanggil dengan `@app-product-planner`).
 
 **Mulai proyek baru**
 ```text

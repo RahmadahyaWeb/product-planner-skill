@@ -30,7 +30,7 @@ Interview (1–2 rounds) → PRD.md ⛔ → PLAN.md ⛔ → UI.md ⛔ → protot
 First check which files exist in the working folder.
 
 - **Resume implementation** ("continue implementation", "do the next task", "lanjutkan implementasi") → token-saving mode:
-  1. Run `python3 /absolute/path/to/app-product-planner/scripts/check_artifacts.py <folder> --next` (or `--next 3`). Do not Read `implementation.md` in full.
+  1. Run `python3 <skill-dir>/scripts/check_artifacts.py <folder> --next` (or `--next 3`), where `<skill-dir>` is the absolute path of the folder containing this SKILL.md (the base directory your agent reports when the skill loads). Do not Read `implementation.md` in full.
   2. Read only the `file:line` pointers from the output (offset/limit, ±30 lines). The Stack section of `PLAN.md`, the wireframe in `UI.md`, and the prototype file of the page being built may also be read.
   3. Do not read `references/*.md` or the full PRD/PLAN/UI. Do not interview.
   4. Do the task following "Code rules".
@@ -120,10 +120,13 @@ When choosing the stack and before writing code that uses a library/framework:
 2. Fetch docs with `get-library-docs` / `query-docs` for the topic at hand (e.g. "app router", "form validation").
 3. Follow the APIs and patterns from those docs, not memory. When the docs disagree with your memory, the docs win.
 
-If the Context7 tools are unavailable: stop and tell the user. Suggest installing it:
-```bash
-claude mcp add context7 -- npx -y @upstash/context7-mcp
-```
+The exact tool name depends on the agent: e.g. `mcp__context7__resolve-library-id` in Claude Code, `context7_resolve-library-id` in OpenCode. Look for any available tool whose name contains `context7` and `resolve-library-id`.
+
+If no Context7 tools are available: stop and tell the user. Suggest installing it for their agent:
+- Claude Code: `claude mcp add context7 -- npx -y @upstash/context7-mcp`
+- OpenCode: `opencode mcp add context7 --url https://mcp.context7.com/mcp`, or add a local server to `opencode.json`: `"context7": { "type": "local", "command": ["npx", "-y", "@upstash/context7-mcp"] }`
+- Other agents: register the MCP server `npx -y @upstash/context7-mcp` per that agent's MCP docs.
+
 Continue without Context7 only if the user explicitly allows it; record that in the PLAN.md Status.
 
 ## Code rules
