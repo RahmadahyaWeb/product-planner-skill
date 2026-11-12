@@ -71,11 +71,10 @@ Skill langsung tersedia di sesi Claude Code berikutnya. Untuk satu proyek saja, 
 
 ### Claude.ai (web / desktop app)
 
-1. Buat file `.skill` (zip folder skill):
-   ```bash
-   cd product-planner-skill && zip -r app-product-planner.skill app-product-planner -x 'app-product-planner/evals/*' '*.DS_Store'
-   ```
-2. Buka **Settings → Capabilities → Skills**, lalu upload `app-product-planner.skill`.
+1. Download **[app-product-planner.skill](https://github.com/RahmadahyaWeb/product-planner-skill/releases/latest/download/app-product-planner.skill)** dari [Releases](https://github.com/RahmadahyaWeb/product-planner-skill/releases/latest).
+2. Buka **Settings → Capabilities → Skills**, lalu upload file itu.
+
+<sub>Mau build sendiri dari source? `zip -r app-product-planner.skill app-product-planner -x 'app-product-planner/evals/*' '*.DS_Store'`</sub>
 
 ### Wajib: pasang MCP Context7
 
